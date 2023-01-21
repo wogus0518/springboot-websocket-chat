@@ -4,11 +4,13 @@ import com.jaehyun.chatwebsocket.service.MsgService;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Getter @Setter
 public class MsgRoom {
     private String roomId;

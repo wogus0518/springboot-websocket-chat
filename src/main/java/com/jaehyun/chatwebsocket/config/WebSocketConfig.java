@@ -10,15 +10,15 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @Slf4j
 @Configuration
-@RequiredArgsConstructor
 @EnableWebSocket
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final WebSocketHandler webSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/ws/chat")
-                .setAllowedOrigins("*");
+        registry.addHandler(webSocketHandler, "/ws/chat") //WebSocket에 접속하기 위한 endpoint는 "/ws/chat"으로 설정
+                .setAllowedOrigins("*");                          //도메인이 다른 서버에서도 접속 가능하도록 cors 설정
     }
 }
