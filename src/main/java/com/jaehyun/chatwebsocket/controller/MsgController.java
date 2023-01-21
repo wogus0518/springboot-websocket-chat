@@ -1,26 +1,25 @@
 package com.jaehyun.chatwebsocket.controller;
 
-import com.jaehyun.chatwebsocket.model.MsgRoom;
-import com.jaehyun.chatwebsocket.service.MsgService;
+import com.jaehyun.chatwebsocket.model.Message;
+import com.jaehyun.chatwebsocket.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chat")
 public class MsgController {
 
-    private final MsgService msgService;
+    private final SimpMessageSendingOperations sendingOperations;
+    private final MessageRepository messageRepository;
 
-    @PostMapping
-    public MsgRoom createRoom(@RequestParam String name) {
-        return msgService.createRoom(name);
-    }
-
-    @GetMapping
-    public List<MsgRoom> findAllRoom() {
-        return msgService.findAllRoom();
+    @MessageMapping("/comm/message")
+    public void message(Message message) {
+        messageRepository.save(message);
+        if (Message.Type.ENTER.equals(message.getType())) {
+            message.setMessage(message.getSender()+ "이 입장했습니다.");
+        }
+        sendingOperations.convertAndSend("/sub/comm/room/" + message.getRoomId(), message);
     }
 }
